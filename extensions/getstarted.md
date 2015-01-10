@@ -39,4 +39,13 @@
 最后一部分是权限请求，用于访问https://secure.flickr.com/上的数据，同时声明了该扩展实现了一个浏览器按钮，并为它指定一个默认图标和弹出窗口
 
 ### 资源
+manifest文件指向了两个资源文件：icon.png 和 popup.html。 这两个资源必须在扩展程序包中存在，所以必须要创建。
+
+icon.png 会在地址栏右侧出现，等待用户交互。  
+popup.html 文件还需要额外的js，直接从google代码库[下载]()
+
+现在工作目录中应该有四个文件： icon.png、manifest.json、popup.html、popup.js 。下一步就是加载。
+
+### 加载扩展程序
+
 
