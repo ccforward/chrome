@@ -1,4 +1,4 @@
-## Chrome扩展程序开发文档
+## Chrome扩展程序开发中文文档
 
 本系列文章翻译自 Google Chrome 的官方 [开发者文档](http://developer.chrome.com)
 
