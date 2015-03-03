@@ -205,6 +205,8 @@ window.setTimeout(function() {
 var imgURL = chrome.extension.getURL("images/myimage.png");
 document.getElementById("someImage").src = imgURL;
 ```
+## 例子
+一个简单的通过消息通信的例子在[Message Timer](https://developer.chrome.com/extensions/samples#message-timer)中，有关以编程方式插入的例子请参见[Page Redder](https://developer.chrome.com/extensions/samples#page-redder)和[Email this page (by Google)](https://developer.chrome.com/extensions/samples#email-this-page-(by-google\))。
 
 ## 视频
 以下视频（英文）讨论了内容脚本的重要概念
