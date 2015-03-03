@@ -101,7 +101,7 @@ xhr.onreadystatechange = function() {
 xhr.send();
 ```
 
-另外，当您通过 HTTP 接收资源时尤其要小心。如果您的扩展程序在不安全的网络环境中使用，网络攻击者（即中间人攻击）可以修改响应，甚至可能攻击您的扩展程序。请尽可能地在可能的情况下首选 HTTPS。
+另外，通过 HTTP 接收资源时尤其要小心。如果你的扩展程序在不安全的网络环境中使用，网络攻击者（即中间人攻击）可以修改响应，甚至可能攻击您的扩展程序。请尽可能地在可能的情况下首选 HTTPS。
 
 ### 与内容安全策略的关系
-如果您在您的清单文件中添加 content_security_policy 属性修改了应用或扩展程序默认的[内容安全策略](contentSecurityPolicy.md)，您需要确保您需要连接的所有主机都受到允许。尽管默认策略不限制连接到哪些主机，当您显式添加 connect-src 或 default-src 指示符时要特别注意。
+如果您在你的清单文件中添加 content_security_policy 属性修改了应用或扩展程序默认的[内容安全策略](contentSecurityPolicy.md)，就需要确保您需要连接的所有主机都受到允许。尽管默认策略不限制连接到哪些主机，当你显式添加 connect-src 或 default-src 指示符时要特别注意。
