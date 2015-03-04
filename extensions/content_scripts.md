@@ -48,75 +48,166 @@
 | include_globs | array of string | 可选。 在应用 matches 之后仅包含同时匹配这一范围的 URL。该属性是为了模拟 Greasemonkey 中的 @include 关键字，有关更多详情请参见下面的[匹配表达式和范围](#match-patterns-globs) |
 | include_globs | array of string | 可选。 在应用 matches 之后排除匹配这一范围的 URL。该属性是为了模拟 Greasemonkey 中的 @exclude 关键字，有关更多详情请参见下面的[匹配表达式和范围](#match-patterns-globs) |
 
+### 匹配表达式和范围
 
+如果页面的 URL 匹配任何 matches 指定的表达式以及任何 include_globs 指定的表达式，并且不匹配 exclude_matches 和 exclude_globs 指定的表达式，则会在页面中插入内容脚本。因为 matches 属性是必需的，exclude_matches、include_globs 和 exclude_globs 只能用来限制受到影响的页面。
+例如，假设 matches 为 ["http://\*.nytimes.com/\*"]：
 
-### 扩展程序的用户界面
-许多扩展程序（但不包括 Chrome 应用）以浏览器按钮或页面按钮的形式向 Google Chrome 浏览器增加用户界面，每个扩展程序最多能有一个浏览器按钮或页面按钮。当扩展程序与大部分网页相关时选择使用浏览器按钮，当扩展程序的图标显示还是消失取决于具体网页时选择使用页面按钮。
+* 如果 exclude_matches 为 ["\*://\*/\*business*"]，那么内容脚本会插入“http://www.nytimes.com/health”，但不会插入“http://www.nytimes.com/business”。
+* 如果 include_globs 为 ["\*nytimes.com/???s/\*"]，那么内容脚本会插入“http://www.nytimes.com/arts/index.html”和“http://www.nytimes.com/jobs/index.html”，但不会插入“http://www.nytimes.com/sports/index.html”。
+* 如果 exclude_globs 为 ["\*science\*"]，那么内容脚本会插入“http://www.nytimes.com”，但不会插入“http://science.nytimes.com”或“http://www.nytimes.com/science”。
 
-扩展程序（以及 Chrome 应用）也可以以其他形式呈现用户界面，例如在 Chrome 浏览器的右键菜单中添加内容，提供选项页面，或者利用内容脚本更改页面的显示方式。有关完整的扩展程序功能以及每一种功能的实现细节，请看 [开发者指南]() 。
+范围（glob）属性与匹配表达式相比遵循不同并且更灵活的语法。所有含有“通配符”星号和问号的 URL 都是可接受的范围字符串，星号（*）匹配任意长度的字符串（包括空字符串），问号（?）匹配任意单个字符。
 
-## 文件
-每一个扩展程序包含以下文件：
+例如，范围 "http://???.example.com/foo/*" 匹配以下任一 URL：
 
-* 一个清单文件
-* 一个或多个 HTML 文件（除非扩展程序是一个主题背景）
-* 可选：一个或多个 JavaScript 文件
-* 可选：扩展程序需要的任何其他文件，例如图片
+* "http://www.example.com/foo/bar"
+* "http://the.example.com/foo/"
 
-### 引用文件
-可以在扩展程序中放置任何文件，使用的话可以通过相对 URL 引用文件，如：
-` <img src="images/myimage.png"> `
+但是不匹配如下 URL：
 
-使用Chrome的调试器可发现，扩展程序中的每一个文件也可以通过绝对 URL 访问，如：
-`chrome-extension://<扩展程序标识符>/<文件路径>`
+* "http://my.example.com/foo/bar"
+* "http://example.com/foo/"
+* "http://www.example.com/foo"
 
-在这 URL 中，<扩展程序标识符> 是扩展程序系统为每一个扩展程序生成的唯一标识符，进入 chrome://extensions 就能看到所有扩展程序的标识符。<文件路径> 是扩展程序的主目录下的文件位置，与相对 URL 相同。
+## 以编程方式插入
 
-### 清单文件
-manifest.json 提供有关扩展程序的各种信息，例如最重要的文件和扩展程序可能具有的能力。以下是一个典型的清单文件，用于一个浏览器按钮，它将会访问来自 google.com 的信息：
+如果您的 JavaScript 或 CSS 代码不需要插入匹配的每一个页面时，例如，如果您希望当用户单击浏览器按钮的图标时才运行脚本，以编程方式插入代码就十分有用。
+
+要向页面中插入代码，您的扩展程序必须拥有该页面的[主机权限](xhr.md#requesting-permission)，并且还需要用到 chrome.tabs 模块。您可以使用清单文件中的 [permissions](declare_permissions.md) 字段获得这些权限。
+
+一旦您拥有了相应的权限，您可以通过调用 [tabs.executeScript](tabs.md#method-executeScript) 向页面插入 JavaScript 代码。要插入 CSS 代码，请使用 [tabs.insertCSS](tabs.md#method-insertCSS)。
+
+下列代码（来自 [make_page_red](http://src.chromium.org/viewvc/chrome/trunk/src/chrome/common/extensions/docs/examples/api/browserAction/make_page_red/) 例子）当用户单击浏览器按钮时向当前标签页插入并执行 JavaScript 代码。
 
 ```
-{
-  "name": "我的扩展程序",
-  "version": "2.1",
-  "description": "从 Google 获取信息。",
-  "icons": { "128": "icon_128.png" },
-  "background": {
-    "persistent": false,
-    "scripts": ["bg.js"]
-  },
-  "permissions": ["http://*.google.com/", "https://*.google.com/"],
-  "browser_action": {
-    "default_title": "",
-    "default_icon": "icon_19.png",
-    "default_popup": "popup.html"
+chrome.browserAction.onClicked.addListener(function(tab) {
+  chrome.tabs.executeScript({
+    code: 'document.body.style.backgroundColor="red"'
+  });
+});
+```
+```
+"permissions": [
+  "activeTab"
+],
+```
+
+当浏览器正在显示一个 HTTP 页面，并且用户单击该扩展程序的浏览器按钮时，扩展程序将页面的 bgcolor 属性设为'red'。结果，除非页面通过 CSS 设置了背景颜色，页面将变成红色。
+
+通常，您不会直接插入代码（如前面的例子所示），而是将代码放在一个文件中。您可以像这样插入文件的内容：
+
+```
+chrome.tabs.executeScript(null, {file: "content_script.js"});
+```
+
+## 执行环境
+
+内容脚本在一个称为隔离环境的特殊环境中执行。它们可以访问所在页面的 DOM，但是不能访问当前页面创建的任何 JavaScript 变量或函数。对于每个内容脚本来说，就像没有其他 JavaScript 在当前页面上执行。反过来也是如此：在当前页面运行的 JavaScript 不能调用或访问任何内容脚本定义的函数或变量。
+
+例如，考虑如下简单页面：
+
+```
+<html>
+  <button id="mybutton">单击我</button>
+  <script>
+    var greeting = "您好，";
+    var button = document.getElementById("mybutton");
+    button.person_name = "Bob";
+    button.addEventListener("click", function() {
+      alert(greeting + button.person_name + "。");
+    }, false);
+  </script>
+</html>
+```
+假设如下内容脚本插入到了 hello.html 中：
+
+```
+var greeting = "您好啊，";
+var button = document.getElementById("mybutton");
+button.person_name = "Roberto";
+button.addEventListener("click", function() {
+  alert(greeting + button.person_name + "。");
+}, false);
+```
+
+现在，如果按钮按下，您将会看到两条问候。
+
+隔离环境允许每一个内容脚本更改自己的 JavaScript 环境，而不用担心是否会与页面或其他内容脚本发生冲突。例如，一个内容脚本可以包含 JQuery v1 而页面可以包含 JQuery v2，并且它们互不影响。
+
+隔离环境的另一个重要好处是将页面上的 JavaScript 和扩展程序中的 JavaScript 完全区分开来，这样我们就可以为内容脚本提供额外功能，而这些额外功能不应该从网页中访问，我们也不用担心访问它们的网页。
+
+网页与扩展程序之间共享的 JavaScript 对象值得注意，例如 `window.onload` 事件。每一个隔离环境拥有该对象自己的副本，对该对象赋值只影响这一独立的副本。例如，网页和扩展程序都可以给 `window.onload` 赋值，但是都不能读取另外一方的事件处理器。事件处理器将按照它们赋值的顺序调用。
+
+## 与嵌入的页面通信
+尽管内容脚本的执行环境和所在页面是互相隔离的，但是它们都可以访问页面的 DOM。如果页面想要和内容脚本通信（或者通过内容脚本与扩展程序通信），必须通过共享的 DOM 进行。
+
+可以使用 window.postMessage（或者 window.webkitPostMessage 用于可传输（Transferable）的对象）：
+
+```
+var port = chrome.runtime.connect();
+
+window.addEventListener("message", function(event) {
+  // 我们只接受来自我们自己的消息
+  if (event.source != window)
+    return;
+
+  if (event.data.type && (event.data.type == "FROM_PAGE")) {
+    console.log("内容脚本接收到：" + event.data.text);
+    port.postMessage(event.data.text);
   }
-}
+}, false);
 ```
 
-关于manifest文件的更多细节： [manifest.json](manifest.md)
+```
+document.getElementById("theButton").addEventListener("click",
+    function() {
+  window.postMessage({ type: "FROM_PAGE", text: "来自网页的问候！" }, "*");
+}, false);
+```
+在上面的例子中，example.html（不是扩展程序的一部分）向自己发送消息，由内容脚本截获并检查，然后发送至扩展程序进程。通过这种方式，页面建立了与扩展程序之间的通信，通过类似的方式反过来也是可能的。
 
 
-## 架构
-许多扩展程序有一个后台网页，它是一个包含扩展程序主要逻辑的不可见页面。扩展程序也可以包含其他页面，展现扩展程序的用户界面。如果扩展程序需要与用户加载的网页交互（相对于包含在扩展程序中的页面），扩展程序必须使用内容脚本(content-script)。
+## 安全性考虑
+当您编写内容脚本时，您应该注意两个安全问题。首先，注意不要向您插入内容脚本的网站引入安全隐患。例如，如果您的内容脚本从另一个网站接收内容（例如通过发出 [XMLHttpRequest](xhr.md)），一定要注意把内容插入当前页面前过滤可能的[跨站脚本攻击](https://en.wikipedia.org/wiki/Cross-site_scripting)。例如，首选 innerText 而不是 innerHTML 插入内容。当您在 HTTPS 页面上获取来自 HTTP 的内容时要特别小心，因为如果用户在不安全的网络环境中，HTTP 内容可能会因为网络中的[中间人攻击](http://en.wikipedia.org/wiki/Man-in-the-middle_attack)而遭到破坏。
 
-### 后台网页
-下图所示的浏览器至少安装了两个扩展程序：一个浏览器按钮（黄色图标）和一个页面按钮（蓝色图标）。浏览器按钮和页面按钮都有后台页面。下图显示了浏览器按钮的后台页面，由 background.html 定义，并且包含在这两个窗口中控制浏览器按钮的 JavaScript 代码。
+第二，尽管在隔离环境中运行您的内容脚本提供了某些保护，但是如果您不加区分地使用来自网页的内容，恶意网页仍然可能攻击您的内容脚本。例如，以下形式是危险的：
 
-![]()
+```
+var data = document.getElementById("json-data")
+// 警告！可能会执行恶意脚本！
+var parsed = eval("(" + data + ")")
+```
+```
+var elmt_id = ...
+// 警告！elmt_id可能为"); …恶意脚本… //"！
+window.setTimeout("animate(" + elmt_id + ")", 200);
+```
+因此，改用更安全的不运行脚本的 API：
 
-后台网页分两种：持久运行的后台网页与事件页面。顾名思义，持续运行的后台网页保持打开状态，事件页面根据需要打开与关闭。除非绝对需要你的后台网页一直运行，最好首选事件页面。
+```
+var data = document.getElementById("json-data")
+// JSON.parse 不会运行攻击者的脚本。
+var parsed = JSON.parse(data);
+```
+```
+var elmt_id = ...
+// 闭包形式的 setTimeout 不会运行脚本。
+window.setTimeout(function() {
+  animate(elmt_id);
+}, 200);
+```
+## 引用扩展程序的文件
+使用 [extension.getURL](extension.md#method-getURL) 获得扩展程序的文件 URL，您可以像任何其他 URL 一样使用获得的结果，如以下代码所示。
 
-有关更多细节，参考 [事件页面]()与 [后台网页]()。
+```
+//用来显示 <扩展程序目录>/images/myimage.png 的代码：
+var imgURL = chrome.extension.getURL("images/myimage.png");
+document.getElementById("someImage").src = imgURL;
+```
 
-### 用户界面网页
-扩展程序可以包含普通的 HTML 网页，用来显示扩展程序的用户界面。例如，浏览器按钮可以包含弹出菜单，通过 HTML 文件实现。任何一个扩展程序都可以有选项页面，让用户自定义扩展程序的工作方式。另外一种特殊页面是替代页面。最后，可以使用 tabs.create 或 window.open() 来显示扩展程序中的任何其他 HTML 文件。
+## 视频
+以下视频（英文）讨论了内容脚本的重要概念
+[第一个视频描述了内容脚本和隔离环境。](https://www.youtube.com/watch?v=laLudeUmXHM)
 
-扩展程序中的 HTML 网页可以互相访问其他页面的全部 DOM，并且可以互相调用函数。
-
-下图显示了浏览器按钮弹出菜单的架构。弹出菜单是由一个 HTML 文件（popup.html）定义的网页，该扩展程序也正好有一个后台网页（background.html）。弹出窗口不用重复后台网页中的代码，因为弹出窗口可以调用后台网页上的函数。
-
-
-有关更多细节，参考 [浏览器按钮]()、[选项]()、[替代页面]() 和 [页面间通信]() 这些部分。
-
-
+接下来的视频描述了消息传递，突出演示了[内容脚本如何向所属扩展发送请求](https://www.youtube.com/watch?v=B4M_a7xejYI)。
