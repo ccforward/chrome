@@ -37,11 +37,16 @@
 
 使用 content_scripts 字段，扩展程序可以向一个页面中插入多个内容脚本，每个内容脚本可以有多个 JavaScript 和 CSS 文件，content_scripts 数组中的每一个项目可以包含如下属性：
 
-| Tables        | Are           | Cool  |
-| ------------- |:-------------:| -----:|
-| col 3 is      | right-aligned | $1600 |
-| col 2 is      | centered      |   $12 |
-| zebra stripes | are neat      |    $1 |
+| 名称           | 类型           | 描述  |
+| :------------- |:-------------| :-----|
+| matches | array of strings | 必选。 指定内容脚本要插入到哪些页面中去。有关这些字符串语法的更多细节请参见匹配表达式，有关如何排除 URL 的信息请参见[匹配表达式和范围](#match-patterns-globs) |
+| exclude_matches | array of strings |   可选。 排除不需要插入内容脚本的页面。有关这些字符串语法的更多细节请参见匹配表达式，有关如何排除 URL 的信息请参见[匹配表达式和范围](#match-patterns-globs) |
+| css | array of strings | 可选。 要插入匹配页面的 CSS 文件列表，它们将在页面的所有 DOM 构造或显示之前，按照数组中指定的顺序插入。 |
+| js | array of strings | 可选。 要插入匹配页面的 JavaScript 文件列表，它们将按照数组中指定的顺序插入。 |
+| run_at | strings | 可选。 控制 js 中的 JavaScript 文件何时插入，可以为 "document_start"、"document_end" 或 "document_idle"，默认为 "document_idle"。  如果是 "document_start"，这些文件将在 css 中指定的文件之后，但是在所有其他 DOM 构造或脚本运行之前插入。<br/><br/> 如果是 "document_end"，文件将在 DOM 完成之后立即插入，但是在加载子资源（如图像与框架）之前插入。 <br/><br/>如果是 "document_idle"，浏览器将在 "document_end" 和刚发生 window.onload 事件这两个时刻之间选择合适的时候插入，具体的插入时间取决于文档的复杂程度以及加载文档所花的时间，并且浏览器会尽可能地为加快页面加载速度而优化。 <br/><br/>注意：如果使用 "document_idle"，内容脚本不一定会收到 window.onload 事件，因为它们可能在这一事件已经发生后再执行。在大多数情况下，在 "document_idle" 时运行的内容脚本没有必要监听 onload 事件，因为它们保证在 DOM 完成后运行。如果您的脚本确实需要在 window.onload 之后运行，您可以检查 document.readyState 属性确定 onload 事件是否已经发生。|
+| all_frames | boolean | 可选。 控制内容脚本运行在匹配页面的所有框架中还是仅在顶层框架中。 |
+| include_globs | array of string | 可选。 在应用 matches 之后仅包含同时匹配这一范围的 URL。该属性是为了模拟 Greasemonkey 中的 @include 关键字，有关更多详情请参见下面的[匹配表达式和范围](#match-patterns-globs) |
+| include_globs | array of string | 可选。 在应用 matches 之后排除匹配这一范围的 URL。该属性是为了模拟 Greasemonkey 中的 @exclude 关键字，有关更多详情请参见下面的[匹配表达式和范围](#match-patterns-globs) |
 
 
 
