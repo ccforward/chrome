@@ -13,3 +13,9 @@
 
 * [浏览器按钮](browserAction.md)
 * [内容脚本](content_scripts.md)
+* [声明权限](declare_permission.md)
+* [丰富的通知](desktop_notifications.md)
+* [清单文件格式](manifest.md)
+* [消息传递](messaging.md)
+* [选项](options.md)
+* [跨站 XMLHttpRequest](xhr.md)
