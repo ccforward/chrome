@@ -98,6 +98,8 @@ manifest.json
 
 # chrome.browserAction 参考
 
+[详细最新的API地址](https://developer.chrome.com/extensions/browserAction)
+
 ## 类型
 ### ColorArray
 array of integer
@@ -122,7 +124,80 @@ array of integer
 
 将更改限制在当某一特定标签页选中时应用，当该标签页关闭时，更改的内容自动恢复。
 
+### getTitle
+`chrome.browserAction.getTitle(object details, function callback)`
 
+获取浏览器按钮的标题。
 
+### setIcon
 
+`chrome.browserAction.setIcon(object details, function callback)`
+
+设置浏览器按钮的图标。图标既可以指定为图片文件的路径，也可以指定来自 canvas 元素的像素数据，或者这两者中任意一个的词典。path 或 imageData 属性中有且只有一个必须指定。
+
+### setPopup
+
+`chrome.browserAction.setPopup(object details)`
+
+设置当用户单击浏览器按钮时显示为弹出内容的 HTML 文档。
+
+### getPopup
+
+`chrome.browserAction.getPopup(object details, function callback)`
+
+获取设置为浏览器按钮弹出内容的 HTML 文档。
+
+### setBadgeText
+
+`chrome.browserAction.setBadgeText(object details)`
+
+设置浏览器按钮上的徽章，显示在图标上。
+
+### getBadgeText
+
+`chrome.browserAction.getBadgeText(object details, function callback)`
+
+获取浏览器按钮上的徽章，如果没有指定标签页，则返回用于所有标签页的徽章。
+
+### setBadgeBackgroundColor
+
+`chrome.browserAction.setBadgeBackgroundColor(object details)`
+设置徽章的背景颜色。
+
+### getBadgeBackgroundColor
+
+`chrome.browserAction.getBadgeBackgroundColor(object details, function callback)`
+
+获取浏览器按钮上的徽章，如果没有指定标签页，则返回用于所有标签页的徽章。
+
+### enable
+
+`chrome.browserAction.enable(integer tabId)`
+
+为某一标签页启用浏览器按钮。默认情况下，浏览器按钮是启用的。
+
+### disable
+
+`chrome.browserAction.disable(integer tabId)`
+
+为某一标签页禁用浏览器按钮。
+
+## 事件
+
+### onClicked
+
+浏览器按钮的图标单击时产生，如果浏览器按钮有弹出内容则不会触发该事件。
+
+#### addListener
+
+`chrome.browserAction.onClicked.addListener(function callback)`
+
+参数
+
+* callback ( function )  
+  callback 参数应该指定一个如下形式的函数：
+
+  `function(tabs.Tab tab) {...};`
+
+* tab ( tabs.Tab )
 
