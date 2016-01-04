@@ -1,21 +1,23 @@
-## Chrome扩展程序开发中文文档
+## Chrome扩展程序开发部分中文文档
 
-本系列文章翻译自 [Google Chrome Extensions](https://developer.chrome.com/extensions/) 与 [Google Chrome Apps](https://developer.chrome.com/apps/)
+本系列文章翻译自 [Google Chrome Extensions](https://developer.chrome.com/)
+
+只翻译了一部分常用功能的文档，已经足够让我们开发一个 chrome 扩展工具了
 
 ## 目录
 ### 入门
-* [入门:建立chrome扩展程序](extensions/getstarted.md)
+* [入门:建立chrome扩展程序](getstarted.md)
 	
 ### 概述
-* [概述:准备好了](extensions/overview.md)
+* [概述:准备好了](overview.md)
 
-### 开发者指南
+### 常用核心文档
 
-* [浏览器按钮 browserAction](extensions/browserAction.md)
-* [内容脚本 content_scripts](extensions/content_scripts.md)
-* [声明权限](extensions/declare_permission.md)
-* [丰富的通知](extensions/desktop_notifications.md)
-* [清单文件格式 manifest](extensions/manifest.md)
-* [消息传递](extensions/messaging.md)
-* [选项](extensions/options.md)
-* [跨站 XMLHttpRequest](extensions/xhr.md)
+* [浏览器按钮 browserAction](browserAction.md)
+* [内容脚本 content_scripts](content_scripts.md)
+* [声明权限](declare_permission.md)
+* [丰富的通知](desktop_notifications.md)
+* [清单文件格式 manifest](manifest.md)
+* [消息传递](messaging.md)
+* [选项](options.md)
+* [跨站 XMLHttpRequest](xhr.md)

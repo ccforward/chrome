@@ -6,7 +6,7 @@
 
 在下图中，地址栏右侧多种颜色的正方形是一个浏览器按钮的图标，图标下有一弹出内容。
 
-![](http://developer.chrome.com/static/images/browser-action.png)
+![](http://gtms04.alicdn.com/tps/i4/TB1s3sbHXXXXXc3aFXX8qhPLFXX-363-226.png)
 
 如果您想创建一个不是永远可见的图标，请使用[页面按钮](extensions/pageAction.md)，而不是浏览器按钮。
 
