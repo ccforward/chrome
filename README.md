@@ -14,6 +14,7 @@
 ### 常用核心文档
 
 * [浏览器按钮 browserAction](browserAction.md)
+* [鼠标右键菜单 contextMenus](contextMenus.md)
 * [内容脚本 content_scripts](content_scripts.md)
 * [声明权限](declare_permission.md)
 * [丰富的通知](desktop_notifications.md)
