@@ -19,6 +19,7 @@
 * [声明权限](declare_permission.md)
 * [丰富的通知](desktop_notifications.md)
 * [清单文件格式 manifest](manifest.md)
+* [清单文件-隐身模式 incognito.md](manifest-incognito.md)
 * [消息传递](messaging.md)
 * [后台网页 background_pages](background_pages.md)
 * [选项](options.md)
