@@ -72,3 +72,21 @@ function saveChanges() {
 }
 ```
 
+如果您希望追踪数据对象的更改，您可以向 onChanged 事件添加监听器，每当存储有任何更改时将会产生该事件。如下是监听对已保存内容的更改的示例代码：
+
+```js
+chrome.storage.onChanged.addListener(function(changes, namespace) {
+  for (key in changes) {
+    var storageChange = changes[key];
+    console.log('存储键“%s”（位于“%s”命名空间中）已更改。' +
+                    '原来的值为“%s”，新的值为“%s”。',
+                key,
+                namespace,
+                storageChange.oldValue,
+                storageChange.newValue);
+  }
+});
+```
+
+#### 具体属性和事件函数 
+参考 [https://developer.chrome.com/extensions/storage.html](https://developer.chrome.com/extensions/storage.html)
