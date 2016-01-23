@@ -22,5 +22,6 @@
 * [清单文件-隐身模式 incognito.md](manifest-incognito.md)
 * [消息传递](messaging.md)
 * [后台网页 background_pages](background_pages.md)
+* [storage](storage.md)
 * [选项](options.md)
 * [跨站 XMLHttpRequest](xhr.md)
