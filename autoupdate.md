@@ -113,3 +113,17 @@ http://test.com/extension_updates.php?x=id%3Daaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa%26
 **注意： 将来可能会发出单个 POST 请求，包含请求参数，而不是发出多个 GET 请求。**
 
 
+## 高级用法：最小浏览器版本
+
+我们不断地在向扩展程序系统中添加更多的 API，可能您发布的更新版本的扩展程序只能在更新版本的浏览器中运行。尽管 Google Chrome 浏览器会自动更新，大部分用户更新至给定的新版本仍然需要几天时间。要确保给定的扩展程序更新仅应用于您指定的版本或更高版本的 Google Chrome 浏览器，您可以在您的更新清单中向 <app> 元素添加 "prodversionmin" 属性。例如：
+
+updates.xml
+
+```xml
+<?xml version='1.0' encoding='UTF-8'?>
+<gupdate xmlns='http://www.google.com/update2/response' protocol='2.0'>
+  <app appid='aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'>
+    <updatecheck codebase='http://myhost.com/mytestextension/mte_v2.crx' version='2.0' prodversionmin='3.0.193.0'/>
+  </app>
+</gupdate>
+```
