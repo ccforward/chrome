@@ -24,4 +24,5 @@
 * [后台网页 background_pages](background_pages.md)
 * [storage](storage.md)
 * [选项](options.md)
+* [自动更新](autoupdate.md)
 * [跨站 XMLHttpRequest](xhr.md)
